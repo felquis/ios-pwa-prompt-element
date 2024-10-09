@@ -1,4 +1,4 @@
-describe.only("delay attribute", () => {
+describe("delay attribute", () => {
   beforeEach(() => {
     // Load the page containing the iOS PWA prompt element
     cy.visit("http://localhost:3000/tests/delay-1000.html");
