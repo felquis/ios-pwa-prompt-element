@@ -1,17 +1,255 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="light">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Basic HTML Page</title>
+    <title>ios-pwa-prompt-element demo page</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+      }
+
+      .light {
+          color-scheme: light;
+      }
+
+      .light ios-pwa-prompt-element {
+        --color-scheme: light;
+      }
+
+      .dark {
+          color-scheme: dark;
+      }
+
+      .dark ios-pwa-prompt-element {
+        --color-scheme: dark;
+      }
+
+      input {
+        display: block;
+        width: 100%;
+      }
+
+      body {
+        font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+        line-height: 1.5;
+        font-weight: 400;
+
+        /* color: white; */
+
+        font-synthesis: none;
+        text-rendering: optimizeLegibility;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        -webkit-text-size-adjust: 100%;
+      }
+
+      .buttons {
+        display: flex;
+        justify-content: center;
+        gap: 1.5rem;
+      }
+    </style>
   </head>
   <body>
-    <h1>Welcome to My Page</h1>
-    <p>This is a basic HTML page.</p>
+    <script>
+      const theme = JSON.parse(sessionStorage.getItem('iosPwaPromptConfig') || '{}')?.theme || 'system'
+      document.documentElement.className = theme
+    </script>
+    <h1>ios-pwa-prompt-element</h1>
+    <p>
+      This is the demo page, the debug property is on which means it will pop-up
+      on any browser
+    </p>
 
-    <ios-pwa-prompt is-visible="true"></ios-pwa-prompt>
+    <h2>how to use:</h2>
+    <ol>
+      <li>change the input parameters</li>
+      <li>click on reset to reset sessionStorage</li>
+      <li>then reload the page</li>
+    </ol>
+    <p>
+      Visit Count:
+      <span id="visitCount"></span> </br>
+      Visible Count:
+      <span id="visibleCount"></span>
+    </p>
+
+    <div class="buttons">
+      <!-- Add these buttons -->
+      <button id="resetButton">Reset</button>
+
+      <button id="reloadButton">Reload Page</button>
+    </div>
+
+    <h2>Configure Prompt Attributes</h2>
+    <form id="configForm">
+      <label
+        >Is Visible: <input type="checkbox" name="is-visible" checked /></label
+      ><br />
+      <label
+        >Delay (ms): <input type="number" name="delay" value="1000" /></label
+      ><br />
+      <label
+        >Prompt on Visit:
+        <input type="number" name="prompt-on-visit" value="1" /></label
+      ><br />
+      <label
+        >Times to Show:
+        <input type="number" name="times-to-show" value="1" /></label
+      ><br />
+      <label>App Icon Path: <input type="text" name="app-icon-path" /></label
+      ><br />
+      <label
+        >Add to Home Screen Step:
+        <input
+          type="text"
+          name="copy-add-to-home-screen-step"
+          value="Press 'Add to Home Screen'" /></label
+      ><br />
+      <label
+        >Description:
+        <input
+          type="text"
+          name="copy-description"
+          value="This website has app functionality. Add it to your home screen to use it in fullscreen and while offline." /></label
+      ><br />
+      <label
+        >Share Step:
+        <input
+          type="text"
+          name="copy-share-step"
+          value="Press the 'Share' button on the menu bar below" /></label
+      ><br />
+      <label>Subtitle: <input type="text" name="copy-subtitle" /></label><br />
+      <label
+        >Title:
+        <input
+          type="text"
+          name="copy-title"
+          value="Add to Home Screen" /></label
+      ><br />
+      
+      <h2>Theme</h2>
+      <label for="theme">Theme:
+        <select name="theme" id="theme">
+          <option value="system">system</option>
+          <option value="light">light</option>
+          <option value="dark">dark</option>
+        </select>
+      </label>
+      
+    </form>
+
 
     <!-- Include the JavaScript bundle -->
     <script src="dist/bundle.js"></script>
+    <script>
+
+      // Display sessionStorage values
+      const storageKey = "ios-pwa-prompt-visit-count";
+      const visibleCountKey = "ios-pwa-prompt-visible-count";
+
+      setInterval(() => {
+        document.getElementById("visitCount").textContent =
+          localStorage.getItem(storageKey) || "Not set";
+        document.getElementById("visibleCount").textContent =
+          localStorage.getItem(visibleCountKey) || "Not set";
+      }, 100);
+
+      // Load saved configuration
+      const configForm = document.getElementById("configForm");
+      let iosPwaPrompt;
+
+      function loadConfig() {
+        const defaultAttributes = {
+          "app-icon-path": `https://s2.googleusercontent.com/s2/favicons?domain=${window?.location?.origin}`,
+          "copy-add-to-home-screen-step": "Press 'Add to Home Screen'",
+          "copy-description":
+            "This website has app functionality. Add it to your home screen to use it in fullscreen and while offline.",
+          "copy-share-step": "Press the 'Share' button on the menu bar below",
+          "copy-subtitle": String(window?.location?.href),
+          "copy-title": "Add to Home Screen",
+          delay: "1000",
+          "prompt-on-visit": 1,
+          "times-to-show": 1,
+          "is-visible": true,
+          'theme': 'system'
+        };
+
+        const savedConfig = JSON.parse(
+          sessionStorage.getItem("iosPwaPromptConfig") || "{}"
+        );
+
+        // Create and insert the ios-pwa-prompt element
+        iosPwaPrompt = document.createElement("ios-pwa-prompt-element");
+        iosPwaPrompt.id = "iosPwaPrompt";
+        iosPwaPrompt.setAttribute("debug", "true");
+        document.body.appendChild(iosPwaPrompt);
+
+        for (const [key, value] of Object.entries(defaultAttributes)) {
+          const input = configForm.elements[key];
+          if (input) {
+            const savedValue = savedConfig[key];
+            if (input.type === "checkbox") {
+              input.checked = savedValue !== undefined ? savedValue : value;
+              iosPwaPrompt.setAttribute(key, input.checked);
+            } else {
+              input.value = savedValue !== undefined ? savedValue : value || "";
+              if (savedValue !== undefined || value !== undefined) {
+                iosPwaPrompt.setAttribute(key, input.value);
+              }
+            }
+
+            // Add event listener for each input
+            input.addEventListener("input", updateConfig);
+          }
+        }
+      }
+
+      function updateConfig(event) {
+        const input = event.target;
+        const key = input.name;
+        const value = input.type === "checkbox" ? input.checked : input.value;
+
+        // Update sessionStorage
+        const config = JSON.parse(
+          sessionStorage.getItem("iosPwaPromptConfig") || "{}"
+        );
+        config[key] = value;
+        sessionStorage.setItem("iosPwaPromptConfig", JSON.stringify(config));
+
+        // Update ios-pwa-prompt-element attribute
+        iosPwaPrompt.setAttribute(key, value);
+
+        if (key === 'theme') {
+          document.documentElement.classList.remove('light')
+          document.documentElement.classList.remove('dark')
+          document.documentElement.classList.remove('system')
+          document.documentElement.classList.add(value)
+        }
+      }
+
+      // Load configuration on page load
+      loadConfig();
+
+      // Add these event listeners at the end of the script
+      document
+        .getElementById("resetButton")
+        .addEventListener("click", function () {
+          localStorage.removeItem(storageKey);
+          localStorage.removeItem(visibleCountKey);
+          document.getElementById("visitCount").textContent =
+            "Visit Count: Not set";
+          document.getElementById("visibleCount").textContent =
+            "Visible Count: Not set";
+        });
+
+      document
+        .getElementById("reloadButton")
+        .addEventListener("click", function () {
+          location.reload();
+        });
+    </script>
   </body>
 </html>
