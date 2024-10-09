@@ -1,23 +1,27 @@
 {
-  "name": "outsider-js-demo",
-  "version": "1.0.0",
-  "description": "render dom outside any framework",
-  "main": "index.js",
+  "name": "ios-pwa-prompt-element",
+  "version": "0.0.0",
+  "description": "A html custom element to help you prompt users to install your PWA capable web app on iOS.",
+  "main": "dist/bundle.js",
   "scripts": {
     "build": "rollup -c",
     "preview-demo": "serve ./demo",
     "test-server": "serve .",
     "test-cypress": "cypress run",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npm run build && npm run test-server & wait-on http://localhost:3000 && npm run test-cypress && kill $!"
   },
-  "author": "",
-  "license": "ISC",
+  "files": [
+    "dist",
+    "lib"
+  ],
+  "license": "Apache-2.0",
   "dependencies": {
     "rollup": "^4.24.0",
     "serve": "^14.2.3"
   },
   "devDependencies": {
     "@rollup/plugin-terser": "^0.4.4",
-    "cypress": "^13.15.0"
+    "cypress": "^13.15.0",
+    "wait-on": "^8.0.1"
   }
 }
