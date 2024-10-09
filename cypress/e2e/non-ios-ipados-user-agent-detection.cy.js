@@ -18,7 +18,7 @@ describe("iOS Safari User Agent", () => {
 
   it("should not show the dialog when not iOS or iPadOS user agent", () => {
     // Check that the dialog is not visible on the first visit
-    cy.get("ios-pwa-prompt")
+    cy.get("ios-pwa-prompt-element")
       .shadow()
       .find(".overlay")
       .should("not.have.class", "visible");

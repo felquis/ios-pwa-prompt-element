@@ -6,10 +6,10 @@ describe("app-icon-path attribute", () => {
 
   it("should render the custom element with the correct app-icon-path", () => {
     // Check that the custom element is visible
-    cy.get("ios-pwa-prompt").should("have.attr", "is-visible", "true");
+    cy.get("ios-pwa-prompt-element").should("have.attr", "is-visible", "true");
 
     // Check that the app-icon-path is set correctly
-    cy.get("ios-pwa-prompt").should(
+    cy.get("ios-pwa-prompt-element").should(
       "have.attr",
       "app-icon-path",
       "/custom-image-pathname.png"

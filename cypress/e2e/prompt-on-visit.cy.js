@@ -1,45 +1,31 @@
 describe("prompt-on-visit attribute", () => {
   beforeEach(() => {
     // Load the page containing the iOS PWA prompt element
-    cy.visit("http://localhost:3000/tests/show-on-second-visit.html");
+    cy.visit("http://localhost:3000/tests/prompt-on-visit.html");
   });
 
   it("should not show the dialog on the first visit", () => {
     // Check that the dialog is not visible on the first visit
-    cy.get("ios-pwa-prompt")
+    cy.get("ios-pwa-prompt-element")
       .shadow()
       .find(".container")
       .should("not.have.class", "visible");
   });
 
   it("should show the dialog on the second visit", () => {
-    // Log the visit count before reload
-    cy.window().then((win) => {
-      const visitCountBefore = win.localStorage.getItem(
-        "ios-pwa-prompt-visit-count"
-      );
-      console.log(`Visit count before reload: ${visitCountBefore}`); // Use console.log for terminal output
-    });
-
     // Reload the page to simulate a second visit
-    cy.reload();
 
-    // Log the visit count after reload
-    cy.window().then((win) => {
-      const visitCountAfter = win.localStorage.getItem(
-        "ios-pwa-prompt-visit-count"
-      );
-      console.log(`Visit count after reload: ${visitCountAfter}`); // Use console.log for terminal output
-    });
+    cy.reload();
+    cy.wait(1050);
 
     // Check that the dialog is visible on the second visit
-    cy.get("ios-pwa-prompt")
+    cy.get("ios-pwa-prompt-element")
       .shadow()
       .find(".overlay")
       .should("have.class", "visible");
 
     // Check that the dialog is visible on the second visit
-    cy.get("ios-pwa-prompt")
+    cy.get("ios-pwa-prompt-element")
       .shadow()
       .find(".panel")
       .should("have.class", "visible");
@@ -50,16 +36,16 @@ describe("prompt-on-visit attribute", () => {
     cy.reload();
 
     // Check that the dialog is visible on the second visit
-    cy.get("ios-pwa-prompt")
+    cy.get("ios-pwa-prompt-element")
       .shadow()
       .find(".overlay")
       .should("have.class", "visible");
 
     // Simulate clicking on the overlay to close the dialog
-    cy.get("ios-pwa-prompt").shadow().find(".overlay").click();
+    cy.get("ios-pwa-prompt-element").shadow().find(".overlay").click();
 
     // Verify the dialog is no longer visible
-    cy.get("ios-pwa-prompt")
+    cy.get("ios-pwa-prompt-element")
       .shadow()
       .find(".overlay")
       .should("not.have.class", "visible");
@@ -70,16 +56,16 @@ describe("prompt-on-visit attribute", () => {
     cy.reload();
 
     // Check that the dialog is visible on the second visit
-    cy.get("ios-pwa-prompt")
+    cy.get("ios-pwa-prompt-element")
       .shadow()
       .find(".overlay")
       .should("have.class", "visible");
 
     // Simulate clicking on the close button to close the dialog
-    cy.get("ios-pwa-prompt").shadow().find(".closeButton").click();
+    cy.get("ios-pwa-prompt-element").shadow().find(".closeButton").click();
 
     // Verify the dialog is no longer visible
-    cy.get("ios-pwa-prompt")
+    cy.get("ios-pwa-prompt-element")
       .shadow()
       .find(".overlay")
       .should("not.have.class", "visible");

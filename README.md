@@ -1,11 +1,17 @@
 # iOS PWA Prompt Element
 
+## Demo
+
+The demo page is built to work as an interactive documentation, change the parameters, reset localStorage and reload the page to see how it works.
+
+[Demo Link](https://felquis.github.io/ios-pwa-prompt-element/)
+
 ## Usage
 
 You can easily load the library from a CDN:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/ios-pwa-prompt-element@0.0.0/dist/bundle.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/ios-pwa-prompt-element@0.0.1/dist/bundle.js"></script>
 ```
 
 or
@@ -20,13 +26,13 @@ Then, add the custom element once anywhere in your HTML:
 <ios-pwa-prompt-element
   is-visible="true"
   delay="1000"
-  prompt-on-visit="2"
-  times-to-show="2"
-  copy-title="This is the title"
-  copy-subtitle="This is the subtitle"
-  copy-description="This is the description"
-  copy-add-to-home-screen-step="Step 1: Add to Home Screen"
-  copy-share-step="Step 2: Share"
+  prompt-on-visit="1"
+  times-to-show="1"
+  copy-title="custom title"
+  copy-subtitle="custom subtitle"
+  copy-description="custom description"
+  copy-add-to-home-screen-step="Step 1: custom step text"
+  copy-share-step="Step 2: custom step text"
 ></ios-pwa-prompt-element>
 ```
 
@@ -50,10 +56,10 @@ Then, add the custom element once anywhere in your HTML:
 | `copy-share-step`              | Text for the "Share" step                       | "Press the 'Share' button on the menu bar below"                                                            |
 | `copy-subtitle`                | Subtitle text (usually the website URL)         | `window?.location?.href`                                                                                    |
 | `copy-title`                   | Title text for the prompt                       | "Add to Home Screen"                                                                                        |
-| `delay`                        | Delay in milliseconds before showing the prompt | 0                                                                                                           |
-| `prompt-on-visit`              | Number of visits before showing the prompt      | N/A                                                                                                         |
-| `times-to-show`                | Maximum number of times to show the prompt      | N/A                                                                                                         |
-| `is-visible`                   | Controls the visibility of the prompt           | "false"                                                                                                     |
+| `delay`                        | Delay in milliseconds before showing the prompt | 1000                                                                                                        |
+| `prompt-on-visit`              | Number of visits before showing the prompt      | 1                                                                                                           |
+| `times-to-show`                | Maximum number of times to show the prompt      | 1                                                                                                           |
+| `is-visible`                   | Controls the visibility of the prompt           | "true"                                                                                                      |
 
 ## Motivation
 

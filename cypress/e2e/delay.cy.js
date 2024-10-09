@@ -6,7 +6,7 @@ describe("delay attribute", () => {
 
   it("should not show the dialog on the first visit", () => {
     // Check that the dialog is not visible on the first visit
-    cy.get("ios-pwa-prompt")
+    cy.get("ios-pwa-prompt-element")
       .shadow()
       .find(".overlay")
       .should("not.have.class", "visible");
@@ -14,7 +14,7 @@ describe("delay attribute", () => {
 
   it("should show the dialog after the specified delay on the first visit", () => {
     // Check that the dialog is not immediately visible
-    cy.get("ios-pwa-prompt")
+    cy.get("ios-pwa-prompt-element")
       .shadow()
       .find(".overlay")
       .should("not.have.class", "visible");
@@ -23,7 +23,7 @@ describe("delay attribute", () => {
     cy.wait(1050);
 
     // Check that the dialog becomes visible after the delay
-    cy.get("ios-pwa-prompt")
+    cy.get("ios-pwa-prompt-element")
       .shadow()
       .find(".overlay")
       .should("have.class", "visible");
@@ -34,16 +34,16 @@ describe("delay attribute", () => {
     cy.wait(1050);
 
     // Check that the dialog is visible
-    cy.get("ios-pwa-prompt")
+    cy.get("ios-pwa-prompt-element")
       .shadow()
       .find(".overlay")
       .should("have.class", "visible");
 
     // Simulate clicking on the overlay to close the dialog
-    cy.get("ios-pwa-prompt").shadow().find(".overlay").click();
+    cy.get("ios-pwa-prompt-element").shadow().find(".overlay").click();
 
     // Verify the dialog is no longer visible
-    cy.get("ios-pwa-prompt")
+    cy.get("ios-pwa-prompt-element")
       .shadow()
       .find(".overlay")
       .should("not.have.class", "visible");
@@ -54,16 +54,16 @@ describe("delay attribute", () => {
     cy.wait(1050);
 
     // Check that the dialog is visible
-    cy.get("ios-pwa-prompt")
+    cy.get("ios-pwa-prompt-element")
       .shadow()
       .find(".overlay")
       .should("have.class", "visible");
 
     // Simulate clicking on the close button to close the dialog
-    cy.get("ios-pwa-prompt").shadow().find(".closeButton").click();
+    cy.get("ios-pwa-prompt-element").shadow().find(".closeButton").click();
 
     // Verify the dialog is no longer visible
-    cy.get("ios-pwa-prompt")
+    cy.get("ios-pwa-prompt-element")
       .shadow()
       .find(".overlay")
       .should("not.have.class", "visible");
