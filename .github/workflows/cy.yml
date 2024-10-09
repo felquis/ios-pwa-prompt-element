@@ -19,10 +19,15 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: "16" # Specify the Node.js version you want to use
+          node-version: "22"
 
       - name: Install dependencies
         run: npm install
 
-      - name: Run tests
-        run: npm run test
+      - name: Run Cypress tests
+        uses: cypress-io/github-action@v4
+        with:
+          build: npm run build # if you have a build step
+          start: npm start # if you need to start a server
+          wait-on: "http://localhost:3000" # if your app runs on a specific port
+          wait-on-timeout: 60 # wait for 60 seconds for the server to start
