@@ -28,7 +28,7 @@ jobs:
         uses: cypress-io/github-action@v6
         with:
           install: true
-          start: npm run test-server
+          start: npm run build && npm run test-server
           wait-on: http://localhost:3000
           wait-on-timeout: 60
           command: npm run test-cypress && kill $!
