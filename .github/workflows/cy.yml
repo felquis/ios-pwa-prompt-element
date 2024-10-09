@@ -19,15 +19,18 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: "22"
+          node-version: "22" # Specify the Node.js version you want to use
 
       - name: Install dependencies
         run: npm install
 
-      - name: Run Cypress tests
-        uses: cypress-io/github-action@v4
+      - name: Install Cypress
+        uses: cypress-io/github-action@v2
         with:
-          build: npm run build # if you have a build step
-          start: npm start # if you need to start a server
-          wait-on: "http://localhost:3000" # if your app runs on a specific port
-          wait-on-timeout: 60 # wait for 60 seconds for the server to start
+          install: true
+          start: npm start
+          wait-on: http://localhost:8080
+          wait-on-timeout: 60
+          command: npm run test-cypress && kill $!
+        env:
+          CYPRESS_VERIFY_TIMEOUT: 60000 # Increase the timeout to 60 seconds
