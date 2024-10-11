@@ -1,1 +1,470 @@
-!function(){"use strict";const n="ios-pwa-prompt-visit-count",t="ios-pwa-prompt-visible-count";class e extends HTMLElement{constructor(){super(),this.attachShadow({mode:"open"}),this.isVisible=!1,this.visitCount=0}connectedCallback(){this.render(),console.log("connectedCallback"),this.shadowRoot.addEventListener("click",(n=>{(n.target.matches(".overlay")||n.target.closest(".closeButton")||n.target.matches(".closeButton"))&&(this.isVisible=!1,this.setAttribute("is-visible","false"),this.render())}))}static get observedAttributes(){return["app-icon-path","debug","copy-add-to-home-screen-step","copy-description","copy-share-step","copy-subtitle","copy-title","delay","prompt-on-visit","times-to-show","is-visible"]}adoptedCallback(){console.log("adoptedCallback",this.getAttribute("prompt-on-visit"))}_allAttributesChangedTimeID=0;_didCallInitialFunction=!1;allAttributesChanged=!1;changeAllAttributes(){clearTimeout(this._allAttributesChangedTimeID),this._allAttributesChangedTimeID=setTimeout((()=>{this.allAttributesChanged=!0,console.log("all attributes changed"),this._didCallInitialFunction||(console.log("init function called"),this._didCallInitialFunction=!0,this.init())}),0)}attributeChangedCallback(n,t,e){console.log("attributeChangedCallback",n,{oldValue:t,newValue:e}),this.changeAllAttributes()}init(){const e=parseInt(this.getAttribute("prompt-on-visit")||"1"),i=parseInt(this.getAttribute("times-to-show")||"1"),o=parseInt(localStorage.getItem(n)??"0")+1,s=parseInt(localStorage.getItem(t)??"0");let a=!1;const l=s<i,r=o>=e;if(console.log("init",{promptOnVisit:e,timesToShow:i,currentVisit:o,timesShown:s,hasVisitsBeforePrompts:r,canPromptOnceMore:l}),r&&l&&(a=!0),e?localStorage.setItem(n,parseInt(o??"0")):localStorage.removeItem(n),"true"===this.getAttribute("is-visible")&&a){console.log("is-visible",!0);let n=1e3;const e=parseInt(this.getAttribute("delay"),10);if(isNaN(e)||(n=e),n>0)setTimeout((()=>{this.isVisible=!0,localStorage.setItem(t,s+1),this.render();this.shadowRoot.querySelector("dialog").show(),localStorage.setItem(t,s+1)}),n);else{this.isVisible=!0,this.render();this.shadowRoot.querySelector("dialog").show(),localStorage.setItem(t,s+1)}}}render(){const n=this.getAttribute("app-icon-path")||`https://s2.googleusercontent.com/s2/favicons?domain=${window?.location?.origin}`,t=this.getAttribute("copy-add-to-home-screen-step")||"Press 'Add to Home Screen'",e=this.getAttribute("copy-description")||"This website has app functionality. Add it to your home screen to use it in fullscreen and while offline.",i=this.getAttribute("copy-share-step")||"Press the 'Share' button on the menu bar below",o=this.getAttribute("copy-subtitle")||String(window?.location?.href),s=this.getAttribute("copy-title")||"Add to Home Screen",a=this.isVisible?"overlay visible":"overlay",l=this.isVisible?"panel visible":"panel";this.shadowRoot.innerHTML=`\n      <style>\n\n        :host {\n          --color-scheme: light dark;\n          position: fixed;\n          bottom: 0;\n          left: 0;\n          width: 100%;\n          user-select: none;\n          -webkit-user-select: none;\n          -moz-user-select: none;\n          -ms-user-select: none;\n\n          font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;\n          line-height: 1.5;\n          font-weight: 400;\n\n          color-scheme: var(--color-scheme);\n          color: rgba(255, 255, 255, 0.87);\n\n          font-synthesis: none;\n          text-rendering: optimizeLegibility;\n          -webkit-font-smoothing: antialiased;\n          -moz-osx-font-smoothing: grayscale;\n          -webkit-text-size-adjust: 100%;\n          display: block;\n          font-family: Arial, sans-serif;\n        }\n\n        .container * {\n          font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto,\n            "Helvetica Neue", Arial, sans-serif;\n          font-smoothing: antialiased;\n          -moz-osx-font-smoothing: antialiased;\n          -webkit-font-smoothing: antialiased;\n        }\n\n        .overlay {\n          background-color: light-dark(rgba(10, 10, 10, 0.2), rgba(10, 10, 10, 0.5));\n          height: 100%;\n          left: 0;\n          min-height: 100vh;\n          min-width: 100vw;\n          opacity: 0;\n          pointer-events: none;\n          position: fixed;\n          top: 0;\n          touch-action: none;\n          transition: opacity 0.2s ease-in;\n          width: 100%;\n        }\n\n        .visible {\n          display: block;\n          opacity: 1;\n          pointer-events: all;\n          touch-action: auto;\n          z-index: 999999;\n        }\n\n        .panel {\n          background-color: light-dark(#f6f6f6, #222222);\n          border-radius: 13px 13px 0 0;\n          bottom: 0;\n          box-sizing: border-box;\n          left: 0;\n          overflow: hidden;\n          position: fixed;\n          transform: translateY(calc(100% + 10px));\n          transition: transform 0.4s cubic-bezier(0.4, 0.24, 0.3, 1);\n          width: 100%;\n          box-shadow: 0 0px 100px rgba(0, 0, 0, 0.23), 0 0px 100px rgba(0, 0, 0, 0.23);\n          z-index: 999999;\n        }\n\n        .panel.visible {\n          display: block;\n          transform: translateY(0);\n        }\n\n        .header {\n          display: flex;\n          justify-content: space-between;\n          padding: 15px;\n        }\n\n        .header * {\n          margin: 0;\n          padding: 0;\n        }\n\n        .appInfo {\n          display: flex;\n          flex-flow: row nowrap;\n        }\n\n        .appIcon {\n          border-radius: 7.5px;\n          height: 60px;\n          min-height: 60px;\n          min-width: 60px;\n          overflow: hidden;\n          width: 60px;\n        }\n\n        .appTitleContainer {\n          align-items: flex-start;\n          display: flex;\n          flex-flow: column nowrap;\n          gap: 4px;\n          justify-content: flex-start;\n          padding: 4px 15px;\n          text-align: left;\n        }\n\n        .appTitle {\n          color: light-dark(#000000, rgba(255, 255, 255, 100%));\n          font-size: 16px;\n          font-weight: 600;\n          line-height: 20px;\n        }\n\n        .appSubtitle {\n          color: light-dark(rgba(60, 60, 67, 60%), rgba(235, 235, 245, 60%));\n          font-size: 14px;\n          font-weight: 300;\n          line-height: 20px;\n        }\n\n        /* divider */\n        .divider {\n          background-color: light-dark(rgba(60, 60, 67, 36%), rgba(84, 84, 88, 65%));\n          height: 1px;\n          transform: scaleY(0.2);\n          width: 100%;\n        }\n\n        /* description */\n        .description {\n          color: light-dark(rgba(60, 60, 67, 60%), rgba(235, 235, 245, 60%));\n          font-size: 14px;\n          font-weight: 300;\n          line-height: 20px;\n          padding: 20px 30px;\n          text-align: left;\n        }\n\n        /* list */\n        .list {\n          list-style-type: none;\n          list-style: inside decimal;\n          margin: 0;\n          padding: 20px 30px;\n        }\n\n        img {\n          max-width: 100%;\n          height: auto;\n        }\n        h2 {\n          font-size: 1.5em;\n          margin: 0.5em 0;\n        }\n        p {\n          margin: 0.5em 0;\n        }\n\n        /* close icon */\n        .close-icon {\n          height: 100%;\n          border: 0;\n        }\n\n        .close-circle {\n          fill: light-dark(#dedede,#363739);\n        }\n\n        .close-cross {\n          fill: light-dark(#807f84, #a3a4a9);\n        }\n        \n        /* share icon */\n        .share-icon {\n          color: light-dark(#007aff, #0a84ff);\n          fill: light-dark(#007aff, #0a84ff);\n          width: 20px;\n        }\n\n        /* add to homescreen icon */\n        .home-icon {\n          color: light-dark(#007aff, white);\n          fill: light-dark(#007aff, white);\n          width: 20px;\n        }\n\n        /* step item */\n        .stepItem {\n          align-items: center;\n          display: flex;\n          font-size: 14px;\n          font-weight: 300;\n          justify-content: flex-start;\n          line-height: 20px;\n          margin: 15px 0;\n          width: 100%;\n        }\n\n        .stepItem:first-of-type {\n          margin-top: 0;\n        }\n\n        .stepItem:last-of-type {\n          margin-bottom: 0;\n        }\n\n        .copy {\n          margin: 0 0 0 30px;\n          text-align: left;\n          color: light-dark(rgba(60, 60, 67, 60%), rgba(235, 235, 245, 60%));\n        }\n\n        /* close button */\n        .closeButton {\n          cursor: pointer;\n          align-items: center;\n          background: none;\n          border-radius: 30px;\n          border: 0;\n          display: block;\n          display: flex;\n          height: 30px;\n          justify-content: center;\n          width: 30px;\n          color: rgba(235, 235, 245, 60%);\n        }\n\n      </style>\n      <dialog open="${this.isVisible?.toString()}">\n        <div class="container">\n          <div class="${a}" aria-label="Close" role="button"></div>\n          <div aria-describedby="pwa-prompt-description" aria-labelledby="pwa-prompt-title" role="dialog" class="${l}">\n            \x3c!-- New Header JSX --\x3e\n            <div class="header iOSPWA-header">\n              <div class="appInfo">\n                <img class="appIcon" src="${n}" alt="App Icon" />\n                <div class="appTitleContainer">\n                  <span class="appTitle">${s}</span>\n                  <span class="appSubtitle">${o}</span>\n                </div>\n              </div>\n              \x3c!-- Assuming you have a close button logic similar to the React component --\x3e\n              <button class="closeButton" aria-label="Close" role="button">\n                <svg viewBox="0 0 30.249 29.8975" class="close-icon">\n                  <path\n                    class="close-circle"\n                    d="M14.9414 29.8828C23.1885 29.8828 29.8828 23.1738 29.8828 14.9414C29.8828 6.69434 23.1885 0 14.9414 0C6.70898 0 0 6.69434 0 14.9414C0 23.1738 6.70898 29.8828 14.9414 29.8828Z"\n                  />\n                  <path\n                    class="close-cross"\n                    d="M10.0195 21.0938C9.3457 21.0938 8.81836 20.5518 8.81836 19.8779C8.81836 19.5557 8.93555 19.248 9.16992 19.0283L13.2275 14.9561L9.16992 10.8984C8.93555 10.6641 8.81836 10.3711 8.81836 10.0488C8.81836 9.36035 9.3457 8.84766 10.0195 8.84766C10.3564 8.84766 10.6201 8.96484 10.8545 9.18457L14.9414 13.2568L19.0576 9.16992C19.3066 8.9209 19.5703 8.81836 19.8926 8.81836C20.5664 8.81836 21.1084 9.3457 21.1084 10.0195C21.1084 10.3564 21.0059 10.6201 20.7422 10.8838L16.6699 14.9561L20.7275 19.0137C20.9766 19.2334 21.0938 19.541 21.0938 19.8779C21.0938 20.5518 20.5518 21.0938 19.8633 21.0938C19.5264 21.0938 19.2188 20.9766 18.999 20.7422L14.9414 16.6699L10.8984 20.7422C10.6641 20.9766 10.3564 21.0938 10.0195 21.0938Z"\n                  />\n                </svg>\n              </button>\n            </div>\n\n            <div class="divider"></div>\n            \n            <div class="description">\n              ${e}\n            </div>\n            <div class="divider"></div>\n\n            <ol class="list">\n              <li class="stepItem">\n                <svg viewBox="0 0 17.6953 26.0059" class="share-icon">\n                  <path d="M17.334 10.8105L17.334 20.4395C17.334 22.4512 16.3086 23.4668 14.2676 23.4668L3.06641 23.4668C1.02539 23.4668 0 22.4609 0 20.4395L0 10.8105C0 8.78906 1.02539 7.7832 3.06641 7.7832L6.05469 7.7832L6.05469 9.35547L3.08594 9.35547C2.10938 9.35547 1.57227 9.87305 1.57227 10.8887L1.57227 20.3613C1.57227 21.377 2.10938 21.8945 3.08594 21.8945L14.2383 21.8945C15.2051 21.8945 15.7617 21.377 15.7617 20.3613L15.7617 10.8887C15.7617 9.87305 15.2051 9.35547 14.2383 9.35547L11.2695 9.35547L11.2695 7.7832L14.2676 7.7832C16.3086 7.7832 17.334 8.79883 17.334 10.8105Z" />\n                  <path d="M8.66211 15.8203C9.08203 15.8203 9.44336 15.4785 9.44336 15.0684L9.44336 5.13672L9.38477 3.68164L9.93164 4.25781L11.4355 5.86914C11.5723 6.02539 11.7773 6.10352 11.9629 6.10352C12.373 6.10352 12.6758 5.81055 12.6758 5.41992C12.6758 5.20508 12.5977 5.04883 12.4512 4.90234L9.22852 1.79688C9.0332 1.60156 8.86719 1.54297 8.66211 1.54297C8.4668 1.54297 8.30078 1.60156 8.0957 1.79688L4.88281 4.90234C4.73633 5.04883 4.64844 5.20508 4.64844 5.41992C4.64844 5.81055 4.94141 6.10352 5.35156 6.10352C5.53711 6.10352 5.75195 6.02539 5.88867 5.86914L7.40234 4.25781L7.94922 3.68164L7.89062 5.13672L7.89062 15.0684C7.89062 15.4785 8.24219 15.8203 8.66211 15.8203Z" />\n                </svg>\n\n                <p class="copy share-step">${i}</p>\n              </li>\n\n              <li class="stepItem">\n                <svg viewBox="0 0 18.3398 17.9785" class="home-icon">\n                  <path d="M3.06641 17.9785L14.9121 17.9785C16.9629 17.9785 17.9785 16.9727 17.9785 14.9609L17.9785 3.02734C17.9785 1.01562 16.9629 0 14.9121 0L3.06641 0C1.02539 0 0 1.01562 0 3.02734L0 14.9609C0 16.9727 1.02539 17.9785 3.06641 17.9785ZM3.08594 16.4062C2.10938 16.4062 1.57227 15.8887 1.57227 14.873L1.57227 3.11523C1.57227 2.09961 2.10938 1.57227 3.08594 1.57227L14.8926 1.57227C15.8594 1.57227 16.4062 2.09961 16.4062 3.11523L16.4062 14.873C16.4062 15.8887 15.8594 16.4062 14.8926 16.4062Z" />\n                  <path d="M4.47266 8.98438C4.47266 9.46289 4.80469 9.78516 5.30273 9.78516L8.17383 9.78516L8.17383 12.666C8.17383 13.1543 8.50586 13.4961 8.98438 13.4961C9.47266 13.4961 9.81445 13.1641 9.81445 12.666L9.81445 9.78516L12.6953 9.78516C13.1836 9.78516 13.5254 9.46289 13.5254 8.98438C13.5254 8.49609 13.1836 8.1543 12.6953 8.1543L9.81445 8.1543L9.81445 5.2832C9.81445 4.78516 9.47266 4.44336 8.98438 4.44336C8.50586 4.44336 8.17383 4.78516 8.17383 5.2832L8.17383 8.1543L5.30273 8.1543C4.80469 8.1543 4.47266 8.49609 4.47266 8.98438Z" />\n                </svg>\n\n                <p class="copy home-step">${t}</p>\n              </li>\n            </ol>\n          </div>\n        </div>\n      </dialog>\n    `}}customElements.define("ios-pwa-prompt-element",e)}();
+(function () {
+  'use strict';
+
+  const storageKey = "ios-pwa-prompt-visit-count";
+  const visibleCountKey = "ios-pwa-prompt-visible-count";
+
+  class IosPwaPromptElement extends HTMLElement {
+    constructor() {
+      super();
+      this.attachShadow({ mode: "open" });
+      this.isVisible = false; // Add a state to track visibility
+      this.visitCount = 0;
+    }
+
+    connectedCallback() {
+      this.render();
+      console.log("connectedCallback");
+
+      this.shadowRoot.addEventListener("click", (event) => {
+        if (event.target.matches(".overlay")) {
+          this.isVisible = false; // Immediately update visibility state
+          this.setAttribute("is-visible", "false");
+          this.render();
+        } else if (
+          event.target.closest(".closeButton") ||
+          event.target.matches(".closeButton")
+        ) {
+          this.isVisible = false; // Immediately update visibility state
+          this.setAttribute("is-visible", "false");
+          this.render();
+        }
+      });
+    }
+
+    static get observedAttributes() {
+      return [
+        "app-icon-path",
+        "debug",
+        "installed-url",
+        "copy-add-to-home-screen-step",
+        "copy-description",
+        "copy-share-step",
+        "copy-subtitle",
+        "copy-title",
+        "delay",
+        "prompt-on-visit",
+        "times-to-show",
+        "is-visible", // Add new attribute to observe
+      ];
+    }
+
+    adoptedCallback() {
+      console.log("adoptedCallback", this.getAttribute("prompt-on-visit"));
+    }
+
+    _allAttributesChangedTimeID = 0;
+    _didCallInitialFunction = false;
+    allAttributesChanged = false;
+    changeAllAttributes() {
+      clearTimeout(this._allAttributesChangedTimeID);
+      this._allAttributesChangedTimeID = setTimeout(() => {
+        this.allAttributesChanged = true;
+        console.log("all attributes changed");
+
+        if (!this._didCallInitialFunction) {
+          console.log("init function called");
+          this._didCallInitialFunction = true;
+          this.init();
+        }
+      }, 0);
+    }
+
+    attributeChangedCallback(name, oldValue, newValue) {
+      console.log("attributeChangedCallback", name, { oldValue, newValue });
+
+      this.changeAllAttributes();
+    }
+
+    init() {
+      const promptOnVisit = parseInt(this.getAttribute("prompt-on-visit") || "1");
+      const timesToShow = parseInt(this.getAttribute("times-to-show") || "1");
+      const currentVisit = parseInt(localStorage.getItem(storageKey) ?? "0") + 1;
+      const installedUrl = this.getAttribute("installed-url");
+      // begins at 0 because it hasn't been shown yet
+      // it will know if it was shown 1 or more times only on subsequent reloads
+      const timesShown = parseInt(localStorage.getItem(visibleCountKey) ?? "0");
+      let showPromptOnPageLoad = false;
+      const canPromptOnceMore = timesShown < timesToShow;
+      const hasVisitsBeforePrompts = currentVisit >= promptOnVisit;
+
+      console.log("init", {
+        promptOnVisit,
+        timesToShow,
+        currentVisit,
+        timesShown,
+        hasVisitsBeforePrompts,
+        canPromptOnceMore,
+      });
+
+      if (hasVisitsBeforePrompts && canPromptOnceMore) {
+        showPromptOnPageLoad = true;
+      }
+
+      if (promptOnVisit) {
+        localStorage.setItem(storageKey, parseInt(currentVisit ?? "0"));
+      } else {
+        // showPromptOnPageLoad = true;
+        localStorage.removeItem(storageKey);
+      }
+
+      // exit early if href includes installed-url
+      if (installedUrl && location.href.includes(installedUrl)) {
+        return;
+      }
+
+      if (this.getAttribute("is-visible") === "true" && showPromptOnPageLoad) {
+        console.log("is-visible", true);
+        let delay = 1000;
+
+        const nativeDelay = parseInt(this.getAttribute("delay"), 10);
+        if (!isNaN(nativeDelay)) {
+          delay = nativeDelay;
+        }
+
+        if (delay > 0) {
+          setTimeout(() => {
+            this.isVisible = true; // Update visibility state after delay
+            localStorage.setItem(visibleCountKey, timesShown + 1);
+            this.render();
+            const dialog = this.shadowRoot.querySelector("dialog");
+            dialog.show(); // Show the dialog
+
+            // Increment visible count when the prompt becomes visible
+            localStorage.setItem(visibleCountKey, timesShown + 1);
+          }, delay);
+        } else {
+          this.isVisible = true; // Immediately update visibility state if no delay
+          this.render();
+          const dialog = this.shadowRoot.querySelector("dialog");
+          dialog.show(); // Show the dialog
+
+          localStorage.setItem(visibleCountKey, timesShown + 1);
+        }
+      }
+    }
+
+    render() {
+      const appIconPath =
+        this.getAttribute("app-icon-path") ||
+        `https://s2.googleusercontent.com/s2/favicons?domain=${window?.location?.origin}`;
+      const copyAddToHomeScreenStep =
+        this.getAttribute("copy-add-to-home-screen-step") ||
+        "Press 'Add to Home Screen'";
+      const copyDescription =
+        this.getAttribute("copy-description") ||
+        "This website has app functionality. Add it to your home screen to use it in fullscreen and while offline.";
+      const copyShareStep =
+        this.getAttribute("copy-share-step") ||
+        "Press the 'Share' button on the menu bar below";
+      const copySubtitle =
+        this.getAttribute("copy-subtitle") || String(window?.location?.href);
+      const copyTitle = this.getAttribute("copy-title") || "Add to Home Screen";
+
+      console.log("render this.isVisible", this.isVisible);
+
+      const overlayClass = this.isVisible ? "overlay visible" : "overlay"; // Conditionally apply class
+      const panelClass = this.isVisible ? "panel visible" : "panel"; // Conditionally apply class
+
+      this.shadowRoot.innerHTML = `
+      <style>
+
+        :host {
+          --color-scheme: light dark;
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          width: 100%;
+          user-select: none;
+          -webkit-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
+
+          font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+          line-height: 1.5;
+          font-weight: 400;
+
+          color-scheme: var(--color-scheme);
+          color: rgba(255, 255, 255, 0.87);
+
+          font-synthesis: none;
+          text-rendering: optimizeLegibility;
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+          -webkit-text-size-adjust: 100%;
+          display: block;
+          font-family: Arial, sans-serif;
+        }
+
+        .container * {
+          font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto,
+            "Helvetica Neue", Arial, sans-serif;
+          font-smoothing: antialiased;
+          -moz-osx-font-smoothing: antialiased;
+          -webkit-font-smoothing: antialiased;
+        }
+
+        .overlay {
+          background-color: light-dark(rgba(10, 10, 10, 0.2), rgba(10, 10, 10, 0.5));
+          height: 100%;
+          left: 0;
+          min-height: 100vh;
+          min-width: 100vw;
+          opacity: 0;
+          pointer-events: none;
+          position: fixed;
+          top: 0;
+          touch-action: none;
+          transition: opacity 0.2s ease-in;
+          width: 100%;
+        }
+
+        .visible {
+          display: block;
+          opacity: 1;
+          pointer-events: all;
+          touch-action: auto;
+          z-index: 999999;
+        }
+
+        .panel {
+          background-color: light-dark(#f6f6f6, #222222);
+          border-radius: 13px 13px 0 0;
+          bottom: 0;
+          box-sizing: border-box;
+          left: 0;
+          overflow: hidden;
+          position: fixed;
+          transform: translateY(calc(100% + 10px));
+          transition: transform 0.4s cubic-bezier(0.4, 0.24, 0.3, 1);
+          width: 100%;
+          box-shadow: 0 0px 100px rgba(0, 0, 0, 0.23), 0 0px 100px rgba(0, 0, 0, 0.23);
+          z-index: 999999;
+        }
+
+        .panel.visible {
+          display: block;
+          transform: translateY(0);
+        }
+
+        .header {
+          display: flex;
+          justify-content: space-between;
+          padding: 15px;
+        }
+
+        .header * {
+          margin: 0;
+          padding: 0;
+        }
+
+        .appInfo {
+          display: flex;
+          flex-flow: row nowrap;
+        }
+
+        .appIcon {
+          border-radius: 7.5px;
+          height: 60px;
+          min-height: 60px;
+          min-width: 60px;
+          overflow: hidden;
+          width: 60px;
+        }
+
+        .appTitleContainer {
+          align-items: flex-start;
+          display: flex;
+          flex-flow: column nowrap;
+          gap: 4px;
+          justify-content: flex-start;
+          padding: 4px 15px;
+          text-align: left;
+        }
+
+        .appTitle {
+          color: light-dark(#000000, rgba(255, 255, 255, 100%));
+          font-size: 16px;
+          font-weight: 600;
+          line-height: 20px;
+        }
+
+        .appSubtitle {
+          color: light-dark(rgba(60, 60, 67, 60%), rgba(235, 235, 245, 60%));
+          font-size: 14px;
+          font-weight: 300;
+          line-height: 20px;
+        }
+
+        /* divider */
+        .divider {
+          background-color: light-dark(rgba(60, 60, 67, 36%), rgba(84, 84, 88, 65%));
+          height: 1px;
+          transform: scaleY(0.2);
+          width: 100%;
+        }
+
+        /* description */
+        .description {
+          color: light-dark(rgba(60, 60, 67, 60%), rgba(235, 235, 245, 60%));
+          font-size: 14px;
+          font-weight: 300;
+          line-height: 20px;
+          padding: 20px 30px;
+          text-align: left;
+        }
+
+        /* list */
+        .list {
+          list-style-type: none;
+          list-style: inside decimal;
+          margin: 0;
+          padding: 20px 30px;
+        }
+
+        img {
+          max-width: 100%;
+          height: auto;
+        }
+        h2 {
+          font-size: 1.5em;
+          margin: 0.5em 0;
+        }
+        p {
+          margin: 0.5em 0;
+        }
+
+        /* close icon */
+        .close-icon {
+          height: 100%;
+          border: 0;
+        }
+
+        .close-circle {
+          fill: light-dark(#dedede,#363739);
+        }
+
+        .close-cross {
+          fill: light-dark(#807f84, #a3a4a9);
+        }
+        
+        /* share icon */
+        .share-icon {
+          color: light-dark(#007aff, #0a84ff);
+          fill: light-dark(#007aff, #0a84ff);
+          width: 20px;
+        }
+
+        /* add to homescreen icon */
+        .home-icon {
+          color: light-dark(#007aff, white);
+          fill: light-dark(#007aff, white);
+          width: 20px;
+        }
+
+        /* step item */
+        .stepItem {
+          align-items: center;
+          display: flex;
+          font-size: 14px;
+          font-weight: 300;
+          justify-content: flex-start;
+          line-height: 20px;
+          margin: 15px 0;
+          width: 100%;
+        }
+
+        .stepItem:first-of-type {
+          margin-top: 0;
+        }
+
+        .stepItem:last-of-type {
+          margin-bottom: 0;
+        }
+
+        .copy {
+          margin: 0 0 0 30px;
+          text-align: left;
+          color: light-dark(rgba(60, 60, 67, 60%), rgba(235, 235, 245, 60%));
+        }
+
+        /* close button */
+        .closeButton {
+          cursor: pointer;
+          align-items: center;
+          background: none;
+          border-radius: 30px;
+          border: 0;
+          display: block;
+          display: flex;
+          height: 30px;
+          justify-content: center;
+          width: 30px;
+          color: rgba(235, 235, 245, 60%);
+        }
+
+      </style>
+      <dialog open="${this.isVisible?.toString()}">
+        <div class="container">
+          <div class="${overlayClass}" aria-label="Close" role="button"></div>
+          <div aria-describedby="pwa-prompt-description" aria-labelledby="pwa-prompt-title" role="dialog" class="${panelClass}">
+            <!-- New Header JSX -->
+            <div class="header iOSPWA-header">
+              <div class="appInfo">
+                <img class="appIcon" src="${appIconPath}" alt="App Icon" />
+                <div class="appTitleContainer">
+                  <span class="appTitle">${copyTitle}</span>
+                  <span class="appSubtitle">${copySubtitle}</span>
+                </div>
+              </div>
+              <!-- Assuming you have a close button logic similar to the React component -->
+              <button class="closeButton" aria-label="Close" role="button">
+                <svg viewBox="0 0 30.249 29.8975" class="close-icon">
+                  <path
+                    class="close-circle"
+                    d="M14.9414 29.8828C23.1885 29.8828 29.8828 23.1738 29.8828 14.9414C29.8828 6.69434 23.1885 0 14.9414 0C6.70898 0 0 6.69434 0 14.9414C0 23.1738 6.70898 29.8828 14.9414 29.8828Z"
+                  />
+                  <path
+                    class="close-cross"
+                    d="M10.0195 21.0938C9.3457 21.0938 8.81836 20.5518 8.81836 19.8779C8.81836 19.5557 8.93555 19.248 9.16992 19.0283L13.2275 14.9561L9.16992 10.8984C8.93555 10.6641 8.81836 10.3711 8.81836 10.0488C8.81836 9.36035 9.3457 8.84766 10.0195 8.84766C10.3564 8.84766 10.6201 8.96484 10.8545 9.18457L14.9414 13.2568L19.0576 9.16992C19.3066 8.9209 19.5703 8.81836 19.8926 8.81836C20.5664 8.81836 21.1084 9.3457 21.1084 10.0195C21.1084 10.3564 21.0059 10.6201 20.7422 10.8838L16.6699 14.9561L20.7275 19.0137C20.9766 19.2334 21.0938 19.541 21.0938 19.8779C21.0938 20.5518 20.5518 21.0938 19.8633 21.0938C19.5264 21.0938 19.2188 20.9766 18.999 20.7422L14.9414 16.6699L10.8984 20.7422C10.6641 20.9766 10.3564 21.0938 10.0195 21.0938Z"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            <div class="divider"></div>
+            
+            <div class="description">
+              ${copyDescription}
+            </div>
+            <div class="divider"></div>
+
+            <ol class="list">
+              <li class="stepItem">
+                <svg viewBox="0 0 17.6953 26.0059" class="share-icon">
+                  <path d="M17.334 10.8105L17.334 20.4395C17.334 22.4512 16.3086 23.4668 14.2676 23.4668L3.06641 23.4668C1.02539 23.4668 0 22.4609 0 20.4395L0 10.8105C0 8.78906 1.02539 7.7832 3.06641 7.7832L6.05469 7.7832L6.05469 9.35547L3.08594 9.35547C2.10938 9.35547 1.57227 9.87305 1.57227 10.8887L1.57227 20.3613C1.57227 21.377 2.10938 21.8945 3.08594 21.8945L14.2383 21.8945C15.2051 21.8945 15.7617 21.377 15.7617 20.3613L15.7617 10.8887C15.7617 9.87305 15.2051 9.35547 14.2383 9.35547L11.2695 9.35547L11.2695 7.7832L14.2676 7.7832C16.3086 7.7832 17.334 8.79883 17.334 10.8105Z" />
+                  <path d="M8.66211 15.8203C9.08203 15.8203 9.44336 15.4785 9.44336 15.0684L9.44336 5.13672L9.38477 3.68164L9.93164 4.25781L11.4355 5.86914C11.5723 6.02539 11.7773 6.10352 11.9629 6.10352C12.373 6.10352 12.6758 5.81055 12.6758 5.41992C12.6758 5.20508 12.5977 5.04883 12.4512 4.90234L9.22852 1.79688C9.0332 1.60156 8.86719 1.54297 8.66211 1.54297C8.4668 1.54297 8.30078 1.60156 8.0957 1.79688L4.88281 4.90234C4.73633 5.04883 4.64844 5.20508 4.64844 5.41992C4.64844 5.81055 4.94141 6.10352 5.35156 6.10352C5.53711 6.10352 5.75195 6.02539 5.88867 5.86914L7.40234 4.25781L7.94922 3.68164L7.89062 5.13672L7.89062 15.0684C7.89062 15.4785 8.24219 15.8203 8.66211 15.8203Z" />
+                </svg>
+
+                <p class="copy share-step">${copyShareStep}</p>
+              </li>
+
+              <li class="stepItem">
+                <svg viewBox="0 0 18.3398 17.9785" class="home-icon">
+                  <path d="M3.06641 17.9785L14.9121 17.9785C16.9629 17.9785 17.9785 16.9727 17.9785 14.9609L17.9785 3.02734C17.9785 1.01562 16.9629 0 14.9121 0L3.06641 0C1.02539 0 0 1.01562 0 3.02734L0 14.9609C0 16.9727 1.02539 17.9785 3.06641 17.9785ZM3.08594 16.4062C2.10938 16.4062 1.57227 15.8887 1.57227 14.873L1.57227 3.11523C1.57227 2.09961 2.10938 1.57227 3.08594 1.57227L14.8926 1.57227C15.8594 1.57227 16.4062 2.09961 16.4062 3.11523L16.4062 14.873C16.4062 15.8887 15.8594 16.4062 14.8926 16.4062Z" />
+                  <path d="M4.47266 8.98438C4.47266 9.46289 4.80469 9.78516 5.30273 9.78516L8.17383 9.78516L8.17383 12.666C8.17383 13.1543 8.50586 13.4961 8.98438 13.4961C9.47266 13.4961 9.81445 13.1641 9.81445 12.666L9.81445 9.78516L12.6953 9.78516C13.1836 9.78516 13.5254 9.46289 13.5254 8.98438C13.5254 8.49609 13.1836 8.1543 12.6953 8.1543L9.81445 8.1543L9.81445 5.2832C9.81445 4.78516 9.47266 4.44336 8.98438 4.44336C8.50586 4.44336 8.17383 4.78516 8.17383 5.2832L8.17383 8.1543L5.30273 8.1543C4.80469 8.1543 4.47266 8.49609 4.47266 8.98438Z" />
+                </svg>
+
+                <p class="copy home-step">${copyAddToHomeScreenStep}</p>
+              </li>
+            </ol>
+          </div>
+        </div>
+      </dialog>
+    `;
+    }
+  }
+
+  customElements.define("ios-pwa-prompt-element", IosPwaPromptElement);
+
+})();
