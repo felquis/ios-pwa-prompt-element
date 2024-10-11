@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>React Custom Element</title>
+    <!-- Load React and ReactDOM from a CDN -->
+    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <!-- Load Babel Standalone from a CDN -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="../demo/dist/bundle.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">
+      // Define a functional component using JSX
+      function CustomElementComponent() {
+        return (
+          <>
+            react demo
+            <ios-pwa-prompt-element
+              is-visible="true"
+              times-to-show="2"
+              delay="0"
+            />
+          </>
+        );
+      }
+
+      // Render the component to the DOM
+      ReactDOM.render(
+        <CustomElementComponent />,
+        document.getElementById("root")
+      );
+    </script>
+  </body>
+</html>
