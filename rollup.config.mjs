@@ -7,24 +7,22 @@ export default defineConfig({
     {
       file: "dist/bundle.js",
       format: "iife",
-      plugins: [
-        terser({
-          compress: {
-            drop_console: false, // Keep console logs
-          },
-        }),
-      ],
+      plugins: [],
+    },
+    {
+      file: "dist/bundle.common.js",
+      format: "commonjs",
+      plugins: [],
+    },
+    {
+      file: "dist/bundle.es.js",
+      format: "es",
+      plugins: [],
     },
     {
       file: "demo/dist/bundle.js",
       format: "iife",
-      plugins: [
-        terser({
-          compress: {
-            drop_console: false, // Keep console logs
-          },
-        }),
-      ],
+      plugins: [],
     },
   ],
 });

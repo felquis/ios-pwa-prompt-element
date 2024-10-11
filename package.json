@@ -1,8 +1,15 @@
 {
   "name": "ios-pwa-prompt-element",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A html custom element to help you prompt users to install your PWA capable web app on iOS.",
-  "main": "dist/bundle.js",
+  "main": "dist/bundle.common.js",
+  "module": "dist/bundle.es.js",
+  "exports": {
+    ".": {
+      "require": "./dist/bundle.common.js",
+      "import": "./dist/bundle.es.js"
+    }
+  },
   "scripts": {
     "build": "rollup -c",
     "preview-demo": "serve ./demo",
