@@ -5,8 +5,8 @@
   "theme_color": "black",
   "background_color": "white",
   "display": "fullscreen",
-  "start_url": "?launcher=true",
-  "id": "?launcher=true",
+  "start_url": "/ios-pwa-prompt-element/?launcher=true",
+  "id": "/ios-pwa-prompt-element/?launcher=true",
   "screenshots": [
     {
       "src": "pwa-images/screenshots/mobile-dark-theme-visible.png",
