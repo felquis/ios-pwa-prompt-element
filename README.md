@@ -10,14 +10,28 @@ The demo page is built to work as an interactive documentation, change the param
 
 You can easily load the library from a CDN:
 
+try [jsdelivr.com](https://jsdelivr.com/) CDN
+
 ```html
 <script src="https://cdn.jsdelivr.net/npm/ios-pwa-prompt-element@0.0.1/dist/bundle.js"></script>
 ```
 
-or
+try [unpkg.com](https://unpkg.com/) CDN
+
+```html
+<script src="https://unpkg.com/ios-pwa-prompt-element@0.0.1/dist/bundle.js"></script>
+```
+
+or npm directly
 
 ```bash
 npm install ios-pwa-prompt-element
+```
+
+then import globally, the custom element will be automatically registered:
+
+```
+import 'ios-pwa-prompt-element'
 ```
 
 Then, add the custom element once anywhere in your HTML:
@@ -28,6 +42,7 @@ Then, add the custom element once anywhere in your HTML:
   delay="1000"
   prompt-on-visit="1"
   times-to-show="1"
+  installed-url="your-url"
   copy-title="custom title"
   copy-subtitle="custom subtitle"
   copy-description="custom description"
@@ -50,16 +65,17 @@ Then, add the custom element once anywhere in your HTML:
 
 | Attribute                      | Description                                     | Default                                                                                                     |
 | ------------------------------ | ----------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `is-visible`                   | Controls the visibility of the prompt           | "true"                                                                                                      |
+| `delay`                        | Delay in milliseconds before showing the prompt | 1000                                                                                                        |
+| `prompt-on-visit`              | Number of visits before showing the prompt      | 1                                                                                                           |
+| `times-to-show`                | Maximum number of times to show the prompt      | 1                                                                                                           |
+| `installed-url`                | If in location.href, hides the prompt           | undefined                                                                                                   |
 | `app-icon-path`                | Path to the app icon image                      | Website favicon or `https://s2.googleusercontent.com/s2/favicons?domain=${window?.location?.origin}`        |
 | `copy-add-to-home-screen-step` | Text for the "Add to Home Screen" step          | "Press 'Add to Home Screen'"                                                                                |
 | `copy-description`             | Description text for the prompt                 | "This website has app functionality. Add it to your home screen to use it in fullscreen and while offline." |
 | `copy-share-step`              | Text for the "Share" step                       | "Press the 'Share' button on the menu bar below"                                                            |
 | `copy-subtitle`                | Subtitle text (usually the website URL)         | `window?.location?.href`                                                                                    |
 | `copy-title`                   | Title text for the prompt                       | "Add to Home Screen"                                                                                        |
-| `delay`                        | Delay in milliseconds before showing the prompt | 1000                                                                                                        |
-| `prompt-on-visit`              | Number of visits before showing the prompt      | 1                                                                                                           |
-| `times-to-show`                | Maximum number of times to show the prompt      | 1                                                                                                           |
-| `is-visible`                   | Controls the visibility of the prompt           | "true"                                                                                                      |
 
 ## Motivation
 
